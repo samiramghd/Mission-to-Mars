@@ -17,18 +17,18 @@ we want to adjust the current web app **(Mission-to-Mars)** to include all four 
 
 we have to use the DevTools to inspect the page for the proper elements to scrape then we will need to retrieve the full-resolution image for each of Mars's hemispheres.we add the dictionary with the image URL string and the hemisphere image title to the list and then going to the next image URL and title. we did with this part of the code shown in the picture.
 
-![name-of-you-image](hemi_code.PNG)
+![name-of-you-image](https://github.com/samiramghd/Mission-to-Mars/blob/main/hemi_code.PNG)
 
 The results are shown in the below picture
 
-![name-of-you-image](title_url.PNG)
+![name-of-you-image](https://github.com/samiramghd/Mission-to-Mars/blob/main/title_url.PNG)
 
 Then we update Mongo database, and modify index.html file so the webpage contains all the information from Mission-to-Mars project as well as the full-resolution image and title for each hemisphere image. Four pictures and the results in mongo database shown in the picture below.
 
-![name-of-you-image](mongo_img.PNG)
+![name-of-you-image](https://github.com/samiramghd/Mission-to-Mars/blob/main/mongo_img.png)
 
 
-![name-of-you-image](hemi_img.PNG)
+![name-of-you-image](https://github.com/samiramghd/Mission-to-Mars/blob/main/hemi_img.PNG)
 
 ### Summary
 
@@ -38,9 +38,9 @@ Our web app is mobile-responsive, and we add two additional Bootstrap 3 componen
 - Added a tooltip that says Click Me!, when the user hoovers over the Scrape button.
 - Added **.img-responsive** class to make it responsive-friendly.
 
-![name-of-you-image](button_vs.PNG)
+![name-of-you-image](https://github.com/samiramghd/Mission-to-Mars/blob/main/button_vs.PNG)
 
-![name-of-you-image](button.PNG)
+![name-of-you-image](https://github.com/samiramghd/Mission-to-Mars/blob/main/button.png)
 
 
-![name-of-you-image](boot2.PNG)
+![name-of-you-image](https://github.com/samiramghd/Mission-to-Mars/blob/main/boot2.PNG)
