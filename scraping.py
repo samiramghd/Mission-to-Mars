@@ -1,10 +1,9 @@
-# Import Splinter, BeautifulSoup, and Pandas
+# Import Splinter, BeautifulSoup and Pandas
 from splinter import Browser
 from bs4 import BeautifulSoup as soup
+from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
 import datetime as dt
-from webdriver_manager.chrome import ChromeDriverManager
-
 
 def scrape_all():
     # Initiate headless driver for deployment
@@ -13,15 +12,15 @@ def scrape_all():
 
     news_title, news_paragraph = mars_news(browser)
 
-    # Run all scraping functions and store results in a dictionary
+    # Run all scraping functions and store results in dictionary
     data = {
-        "news_title": news_title,
-        "news_paragraph": news_paragraph,
-        "featured_image": featured_image(browser),
-        "facts": mars_facts(),
-        "last_modified": dt.datetime.now()
+      "news_title": news_title,
+      "news_paragraph": news_paragraph,
+      "featured_image": featured_image(browser),
+      "facts": mars_facts(),
+      "hemisphere_image_urls": hemisphere_image_urls(browser),
+      "last_modified": dt.datetime.now()
     }
-
     # Stop webdriver and return data
     browser.quit()
     return data
@@ -29,16 +28,15 @@ def scrape_all():
 
 def mars_news(browser):
 
-    # Scrape Mars News
-    # Visit the mars nasa news site
-    url = 'https://data-class-mars.s3.amazonaws.com/Mars/index.html'
+    # Visist the mars nasa news site
+    url = 'https://redplanetscience.com/'
     browser.visit(url)
 
     # Optional delay for loading the page
     browser.is_element_present_by_css('div.list_text', wait_time=1)
 
-    # Convert the browser html to a soup object and then quit the browser
-    html = browser.html
+    # Convert the browser html to a soup object
+    html= browser.html
     news_soup = soup(html, 'html.parser')
 
     # Add try/except for error handling
@@ -48,7 +46,7 @@ def mars_news(browser):
         news_title = slide_elem.find('div', class_='content_title').get_text()
         # Use the parent element to find the paragraph text
         news_p = slide_elem.find('div', class_='article_teaser_body').get_text()
-
+    
     except AttributeError:
         return None, None
 
@@ -56,8 +54,9 @@ def mars_news(browser):
 
 
 def featured_image(browser):
+
     # Visit URL
-    url = 'https://data-class-jpl-space.s3.amazonaws.com/JPL_Space/index.html'
+    url = 'https://spaceimages-mars.com'
     browser.visit(url)
 
     # Find and click the full image button
@@ -76,19 +75,21 @@ def featured_image(browser):
     except AttributeError:
         return None
 
-    # Use the base url to create an absolute url
-    img_url = f'https://data-class-jpl-space.s3.amazonaws.com/JPL_Space/{img_url_rel}'
-
+    # Use the base URL to create an absolute URL
+    img_url = f'https://spaceimages-mars.com/{img_url_rel}'
+    
     return img_url
+
 
 def mars_facts():
     # Add try/except for error handling
     try:
         # Use 'read_html' to scrape the facts table into a dataframe
-        df = pd.read_html('https://data-class-mars-facts.s3.amazonaws.com/Mars_Facts/index.html')[0]
+        df = pd.read_html('https://galaxyfacts-mars.com')[0]
 
-    except BaseException:
-        return None
+    except BaseException as err:
+        print(err)
+        return "Mars facts could not scrape table"
 
     # Assign columns and set index of dataframe
     df.columns=['Description', 'Mars', 'Earth']
@@ -97,7 +98,27 @@ def mars_facts():
     # Convert dataframe into HTML format, add bootstrap
     return df.to_html(classes="table table-striped")
 
-if __name__ == "__main__":
+def hemisphere_image_urls(browser):
+    
+    url = 'https://marshemispheres.com/'
+    browser.visit(url)
 
+    # Create a list to hold the images and titles.
+    hemisphere_image_urls = []
+    
+    # retrieve the image urls and titles for each hemisphere.
+    for i in range(0,4):
+        hemispheres = {}
+        browser.find_by_css('a.product-item img')[i].click()
+        hemispheres ['img_url'] = browser.find_by_text('Sample')['href']
+        hemispheres ['title'] = browser.find_by_css('h2.title').text
+        browser.back()
+        hemisphere_image_urls.append(hemispheres)
+    
+    
+    hemi_img={"hemispheres_data": hemisphere_image_urls}
+    return hemi_img
+
+if __name__ == "__main__":
     # If running as script, print scraped data
     print(scrape_all())
